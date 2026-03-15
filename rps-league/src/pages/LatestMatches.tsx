@@ -9,14 +9,13 @@ import './LatestMatches.css';
 export function LatestMatches() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedGame, setSelectedGame] = useState<GameResult | null>(null);
-  const date = selectedDate ? new Date(selectedDate + 'T00:00:00') : null;
-  
-  const { matches: latestMatches, loading: latestLoading, error: latestError, nextPage, loadMore, isFullyLoaded } = useLatestMatches();
-  const { matches: dateMatches, loading: dateLoading, error: dateError } = useMatchesByDate(date);
 
-  const matches = date || selectedDate ? dateMatches : latestMatches;
-  const loading = date || selectedDate ? dateLoading : latestLoading;
-  const error = date || selectedDate ? dateError : latestError;
+  const { matches: latestMatches, loading: latestLoading, error: latestError, nextPage, loadMore, isFullyLoaded } = useLatestMatches();
+  const { matches: dateMatches, loading: dateLoading, error: dateError } = useMatchesByDate(selectedDate);
+
+  const matches = selectedDate ? dateMatches : latestMatches;
+  const loading = selectedDate ? dateLoading : latestLoading;
+  const error = selectedDate ? dateError : latestError;
 
   const handleMatchClick = useCallback((game: GameResult) => {
     setSelectedGame(game);

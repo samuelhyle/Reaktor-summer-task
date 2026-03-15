@@ -1,0 +1,214 @@
+{
+  "totalMatches": 200400,
+  "earliest": "1970-01-21T12:30:10.918Z",
+  "latest": "2026-02-16T00:31:46.000Z",
+  "dataQuality": {
+    "invalidMoveMatches": 14913,
+    "invalidMoves": [
+      "BLADE",
+      "SPOCK",
+      "LIZARD",
+      "DOG"
+    ],
+    "bogusTimestampMatches": 22587,
+    "caseIssueMatches": 49194
+  },
+  "q1": {
+    "lastMatch": {
+      "playerA": {
+        "name": "Layla Chen",
+        "played": "ROCK"
+      },
+      "playerB": {
+        "name": "Kwame Tanaka",
+        "played": "PAPER"
+      },
+      "time": "2026-03-09T23:59:34.000Z",
+      "winner": "Kwame Tanaka",
+      "validMoves": true
+    }
+  },
+  "q2": {
+    "matchCount": 64,
+    "first10Results": [
+      "INVALID",
+      "WIN",
+      "TIE",
+      "TIE",
+      "LOSE",
+      "LOSE",
+      "WIN",
+      "INVALID",
+      "WIN",
+      "TIE"
+    ],
+    "first10Details": [
+      {
+        "time": "2026-02-28T11:00:22.000Z",
+        "playerAMove": "ROCK",
+        "playerBMove": "DOG",
+        "opponent": "Sofia Patel",
+        "result": "INVALID",
+        "validMoves": false
+      },
+      {
+        "time": "2026-02-28T11:08:04.000Z",
+        "playerAMove": "PAPER",
+        "playerBMove": "ROCK",
+        "opponent": "Layla Johansson",
+        "result": "WIN",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T12:44:50.000Z",
+        "playerAMove": "PAPER",
+        "playerBMove": "PAPER",
+        "opponent": "Carmen Patel",
+        "result": "TIE",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T12:58:36.000Z",
+        "playerAMove": "SCISSORS",
+        "playerBMove": "Scissors",
+        "opponent": "Carmen Johansson",
+        "result": "TIE",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T14:42:23.000Z",
+        "playerAMove": "rock",
+        "playerBMove": "SCISSORS",
+        "opponent": "Layla Garcia",
+        "result": "LOSE",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T15:00:09.000Z",
+        "playerAMove": "ROCK",
+        "playerBMove": "Paper",
+        "opponent": "Carmen Johansson",
+        "result": "LOSE",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T15:34:41.000Z",
+        "playerAMove": "SCISSORS",
+        "playerBMove": "PAPER",
+        "opponent": "Omar Chen",
+        "result": "WIN",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T16:27:45.000Z",
+        "playerAMove": "ROCK",
+        "playerBMove": "LIZARD",
+        "opponent": "Elena Mensah",
+        "result": "INVALID",
+        "validMoves": false
+      },
+      {
+        "time": "2026-02-28T16:39:28.000Z",
+        "playerAMove": "SCISSORS",
+        "playerBMove": "ROCK",
+        "opponent": "Mateo Patel",
+        "result": "WIN",
+        "validMoves": true
+      },
+      {
+        "time": "2026-02-28T17:02:38.000Z",
+        "playerAMove": "paper",
+        "playerBMove": "PAPER",
+        "opponent": "Sofia Patel",
+        "result": "TIE",
+        "validMoves": true
+      }
+    ]
+  },
+  "q3": {
+    "top10": [
+      {
+        "name": "Yuki Chen",
+        "wins": 530
+      },
+      {
+        "name": "Mateo Okonkwo",
+        "wins": 519
+      },
+      {
+        "name": "Hiroshi Chen",
+        "wins": 507
+      },
+      {
+        "name": "Elena Silva",
+        "wins": 504
+      },
+      {
+        "name": "Ingrid Garcia",
+        "wins": 502
+      },
+      {
+        "name": "Mateo Tanaka",
+        "wins": 497
+      },
+      {
+        "name": "Ingrid Tanaka",
+        "wins": 493
+      },
+      {
+        "name": "Priya Chen",
+        "wins": 493
+      },
+      {
+        "name": "Elena Müller",
+        "wins": 492
+      },
+      {
+        "name": "Layla Garcia",
+        "wins": 489
+      }
+    ],
+    "top10NoBogus": [
+      {
+        "name": "Yuki Chen",
+        "wins": 437
+      },
+      {
+        "name": "Mateo Okonkwo",
+        "wins": 434
+      },
+      {
+        "name": "Elena Silva",
+        "wins": 412
+      },
+      {
+        "name": "Elena Chen",
+        "wins": 410
+      },
+      {
+        "name": "Min-jun Johansson",
+        "wins": 410
+      },
+      {
+        "name": "Mateo Tanaka",
+        "wins": 408
+      },
+      {
+        "name": "Ingrid Garcia",
+        "wins": 406
+      },
+      {
+        "name": "Elena Müller",
+        "wins": 404
+      },
+      {
+        "name": "Hiroshi Kim",
+        "wins": 404
+      },
+      {
+        "name": "Hiroshi Chen",
+        "wins": 402
+      }
+    ]
+  }
+}

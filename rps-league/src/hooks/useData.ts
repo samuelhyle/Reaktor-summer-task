@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchHistory, getDateKey, sortByTimeDesc, getWinnerName } from '../services/api';
+import { fetchHistory, getDateKey, sortByTimeDesc, getWinnerName, isValidMatch, normalizeMove } from '../services/api';
 import { apiCache } from '../services/cache';
-import type { GameResult, PlayerStats, Move } from '../types';
+import type { GameResult, PlayerStats } from '../types';
 
 export function useLatestMatches() {
   const [matches, setMatches] = useState<GameResult[]>([]);
@@ -76,7 +76,7 @@ export function useLatestMatches() {
         setMatches(prev => {
           const existingIds = new Set(sorted.map(g => g.gameId));
           const existing = prev.filter(g => !existingIds.has(g.gameId));
-          return sortByTimeDesc([...newMatches, ...existing]);
+          return sortByTimeDesc([...sorted, ...existing]);
         });
       }
       
@@ -114,13 +114,13 @@ export function useLatestMatches() {
   };
 }
 
-export function useMatchesByDate(date: Date | null) {
+export function useMatchesByDate(dateStr: string) {
   const [matches, setMatches] = useState<GameResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadMatches = useCallback(async () => {
-    if (!date) {
+    if (!dateStr) {
       setMatches([]);
       return;
     }
@@ -128,22 +128,23 @@ export function useMatchesByDate(date: Date | null) {
     try {
       setLoading(true);
       setError(null);
-      
+
+      const date = new Date(dateStr + 'T00:00:00');
       const targetDateKey = getDateKey(date.getTime());
-      
+
       // Load until the beginning of that date (midnight)
       const targetTime = date.getTime();
       const allMatches = await apiCache.loadMatchesUntil(targetTime);
-      
+
       const filtered = allMatches.filter(m => getDateKey(m.time) === targetDateKey);
-      
+
       setMatches(sortByTimeDesc(filtered));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch matches');
     } finally {
       setLoading(false);
     }
-  }, [date]);
+  }, [dateStr]);
 
   useEffect(() => {
     loadMatches();
@@ -208,8 +209,12 @@ export function usePlayerSearch(query: string) {
       
       const names = new Set<string>();
       filtered.forEach(m => {
-        names.add(m.playerA.name);
-        names.add(m.playerB.name);
+        if (m.playerA.name.toLowerCase().includes(lowerQuery)) {
+          names.add(m.playerA.name);
+        }
+        if (m.playerB.name.toLowerCase().includes(lowerQuery)) {
+          names.add(m.playerB.name);
+        }
       });
       
       setMatches(sortByTimeDesc(filtered));
@@ -267,35 +272,44 @@ export function useLeaderboard(startDate: Date | null, endDate: Date | null) {
       const playerStats = new Map<string, ExtendedPlayerStats>();
       
       for (const game of filteredMatches) {
+        if (!isValidMatch(game)) continue;
+
         const winnerResult = getWinnerName(game);
-        
-        if (winnerResult === 'TIE') continue;
+
+        const nameA = game.playerA.name;
+        const nameB = game.playerB.name;
+
+        if (!playerStats.has(nameA)) {
+          playerStats.set(nameA, createInitialStats(nameA));
+        }
+        if (!playerStats.has(nameB)) {
+          playerStats.set(nameB, createInitialStats(nameB));
+        }
+
+        const statsA = playerStats.get(nameA)!;
+        const statsB = playerStats.get(nameB)!;
+
+        const moveA = normalizeMove(game.playerA.played);
+        const moveB = normalizeMove(game.playerB.played);
+        statsA.moveStats[moveA]++;
+        statsB.moveStats[moveB]++;
+
+        if (winnerResult === 'TIE') {
+          statsA.totalGames++;
+          statsB.totalGames++;
+          continue;
+        }
 
         const winnerName = winnerResult;
-        const loserName = winnerName === game.playerA.name ? game.playerB.name : game.playerA.name;
-        
-        const winnerMove = winnerName === game.playerA.name ? game.playerA.played : game.playerB.played;
-        const loserMove = loserName === game.playerA.name ? game.playerA.played : game.playerB.played;
-
-        if (!playerStats.has(winnerName)) {
-          playerStats.set(winnerName, createInitialStats(winnerName));
-        }
-        if (!playerStats.has(loserName)) {
-          playerStats.set(loserName, createInitialStats(loserName));
-        }
-
-        const winnerStats = playerStats.get(winnerName)!;
-        const loserStats = playerStats.get(loserName)!;
+        const winnerStats = winnerName === nameA ? statsA : statsB;
+        const loserStats = winnerName === nameA ? statsB : statsA;
 
         winnerStats.wins++;
-        winnerStats.moveStats[winnerMove as Move]++;
-        
         loserStats.losses++;
-        loserStats.moveStats[loserMove as Move]++;
       }
 
       const result: ExtendedPlayerStats[] = Array.from(playerStats.values()).map(stats => {
-        stats.totalGames = stats.wins + stats.losses;
+        stats.totalGames += stats.wins + stats.losses;
         stats.winRate = stats.totalGames > 0 ? Math.round((stats.wins / stats.totalGames) * 100) : 0;
         
         const streaks = calculateStreaks(filteredMatches, stats.name);
@@ -348,7 +362,7 @@ function createInitialStats(name: string): ExtendedPlayerStats {
 
 function calculateStreaks(matches: GameResult[], playerName: string): { win: number; loss: number } {
   const playerMatches = matches.filter(
-    m => m.playerA.name === playerName || m.playerB.name === playerName
+    m => (m.playerA.name === playerName || m.playerB.name === playerName) && isValidMatch(m)
   ).sort((a, b) => b.time - a.time);
 
   let maxWinStreak = 0;
@@ -358,12 +372,12 @@ function calculateStreaks(matches: GameResult[], playerName: string): { win: num
 
   for (const game of playerMatches) {
     const isPlayerA = game.playerA.name === playerName;
-    const playerMove = isPlayerA ? game.playerA.played : game.playerB.played;
-    const opponentMove = isPlayerA ? game.playerB.played : game.playerA.played;
+    const playerMove = normalizeMove(isPlayerA ? game.playerA.played : game.playerB.played);
+    const opponentMove = normalizeMove(isPlayerA ? game.playerB.played : game.playerA.played);
 
     if (playerMove === opponentMove) continue;
 
-    const playerWins = 
+    const playerWins =
       (playerMove === 'ROCK' && opponentMove === 'SCISSORS') ||
       (playerMove === 'SCISSORS' && opponentMove === 'PAPER') ||
       (playerMove === 'PAPER' && opponentMove === 'ROCK');

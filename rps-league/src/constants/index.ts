@@ -1,5 +1,7 @@
+const isDev = import.meta.env.DEV;
+
 export const API_CONFIG = {
-  BASE_URL: 'https://assignments.reaktor.com',
+  BASE_URL: isDev ? '/api' : 'https://assignments.reaktor.com',
   TOKEN: '0cREZMgoSZiQ1_RyanlrdLuROkaZpwj1',
   REFRESH_INTERVAL: 15000,
   DEBOUNCE_DELAY: 300,

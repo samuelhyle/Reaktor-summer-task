@@ -7,6 +7,26 @@ interface CacheEntry<T> {
   timestamp: number;
 }
 
+async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${API_CONFIG.TOKEN}`,
+    },
+  });
+
+  if (res.status === 429 && retries > 0) {
+    await new Promise(r => setTimeout(r, 2000));
+    return fetchWithRetry(url, retries - 1);
+  }
+
+  if (res.status >= 500 && retries > 0) {
+    await new Promise(r => setTimeout(r, 1000));
+    return fetchWithRetry(url, retries - 1);
+  }
+
+  return res;
+}
+
 class APICache {
   private cache: Map<string, CacheEntry<HistoryResponse>> = new Map();
   private allMatchesCache: GameResult[] = [];
@@ -22,14 +42,14 @@ class APICache {
   get(continuation?: string): HistoryResponse | null {
     const key = this.getKey(continuation);
     const entry = this.cache.get(key);
-    
+
     if (!entry) return null;
-    
+
     if (Date.now() - entry.timestamp > CACHE_CONFIG.MAX_AGE) {
       this.cache.delete(key);
       return null;
     }
-    
+
     return entry.data;
   }
 
@@ -38,7 +58,7 @@ class APICache {
       const oldestKey = this.cache.keys().next().value;
       if (oldestKey) this.cache.delete(oldestKey);
     }
-    
+
     this.cache.set(this.getKey(continuation), {
       data,
       timestamp: Date.now(),
@@ -53,17 +73,14 @@ class APICache {
     if (!this.loadingPromise) {
       this.loadingPromise = this.fetchAllMatches(targetTimestamp);
     } else {
-      // If already loading, wait for it
       await this.loadingPromise;
       if (!this.allMatchesLoaded && this.getOldestTimestamp() > targetTimestamp) {
-        // Only fetch more if the previous fetch didn't reach the target timestamp
-        // AND the previous fetch wasn't just stopped by the 50-page limit for a DIFFERENT target
         this.loadingPromise = this.fetchAllMatches(targetTimestamp);
       } else {
         return this.allMatchesCache;
       }
     }
-    
+
     try {
       await this.loadingPromise;
       return this.allMatchesCache;
@@ -79,14 +96,10 @@ class APICache {
 
   async refreshNewMatches(): Promise<GameResult[]> {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/history`, {
-        headers: {
-          'Authorization': `Bearer ${API_CONFIG.TOKEN}`,
-        },
-      });
+      const response = await fetchWithRetry(`${API_CONFIG.BASE_URL}/history`);
       if (!response.ok) return [];
       const json = await response.json();
-      
+
       const newMatches = json.data.filter((g: GameResult) => !this.seenGameIds.has(g.gameId));
       if (newMatches.length > 0) {
         for (const match of newMatches) {
@@ -111,12 +124,13 @@ class APICache {
     let hasMore = !this.allMatchesLoaded;
     let pagesFetched = 0;
 
-    // Default max pages to prevent infinite loops and rate limiting
-    const maxPages = targetTimestamp === 0 ? 10 : 50;
+    // Need enough pages to reach the target date. With ~7200 matches/day
+    // and 300/page, even 30 days back needs ~720 pages.
+    const maxPages = 700;
 
     while (hasMore) {
       if (this.allMatchesCache.length > 0 && this.getOldestTimestamp() <= targetTimestamp) {
-        break; // We reached the target timestamp
+        break;
       }
 
       if (pagesFetched >= maxPages) {
@@ -129,23 +143,21 @@ class APICache {
       if (cached) {
         response = cached;
       } else {
-        const url = continuation 
-          ? `${API_CONFIG.BASE_URL}${continuation}` 
+        const url = continuation
+          ? `${API_CONFIG.BASE_URL}${continuation}`
           : `${API_CONFIG.BASE_URL}/history`;
-        
-        const res = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${API_CONFIG.TOKEN}`,
-          },
-        });
+
+        const res = await fetchWithRetry(url);
 
         if (res.status === 429) {
-          console.warn('Rate limited. Stopping fetch early.');
-          break;
+          console.warn('Rate limited after retries. Pausing...');
+          await new Promise(r => setTimeout(r, 5000));
+          continue;
         }
 
         if (!res.ok) {
-          throw new Error(`API Error: ${res.status}`);
+          console.warn(`API Error: ${res.status}. Stopping fetch.`);
+          break;
         }
 
         response = await res.json();

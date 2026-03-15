@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { MatchCard, MatchCardSkeleton, PlayerStatsSkeleton, Modal } from '../components';
 import { usePlayerSearch } from '../hooks/useData';
-import { determineWinner } from '../services/api';
+import { determineWinner, isValidMatch, normalizeMove } from '../services/api';
 import type { GameResult, Move } from '../types';
 import { MOVE_ICONS, COLORS } from '../constants';
 import './PlayerSearch.css';
@@ -19,6 +19,7 @@ export function PlayerSearch() {
 
     let wins = 0;
     let losses = 0;
+    let ties = 0;
     let currentWinStreak = 0;
     let maxWinStreak = 0;
     let currentLossStreak = 0;
@@ -28,17 +29,22 @@ export function PlayerSearch() {
     const sortedMatches = [...matches].sort((a, b) => b.time - a.time);
 
     sortedMatches.forEach(game => {
+      if (!isValidMatch(game)) return;
+
       const isPlayerA = game.playerA.name === playerName;
       const isPlayerB = game.playerB.name === playerName;
       if (!isPlayerA && !isPlayerB) return;
 
-      const playerMove = isPlayerA ? game.playerA.played : game.playerB.played;
-      const opponentMove = isPlayerA ? game.playerB.played : game.playerA.played;
+      const playerMove = normalizeMove(isPlayerA ? game.playerA.played : game.playerB.played);
+      const opponentMove = normalizeMove(isPlayerA ? game.playerB.played : game.playerA.played);
       moveStats[playerMove]++;
 
-      if (playerMove === opponentMove) return;
+      if (playerMove === opponentMove) {
+        ties++;
+        return;
+      }
 
-      const playerWins = 
+      const playerWins =
         (playerMove === 'ROCK' && opponentMove === 'SCISSORS') ||
         (playerMove === 'SCISSORS' && opponentMove === 'PAPER') ||
         (playerMove === 'PAPER' && opponentMove === 'ROCK');
@@ -56,7 +62,7 @@ export function PlayerSearch() {
       }
     });
 
-    const totalGames = wins + losses;
+    const totalGames = wins + losses + ties;
     return {
       name: playerName,
       wins,
