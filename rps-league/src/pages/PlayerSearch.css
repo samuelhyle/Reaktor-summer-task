@@ -1,0 +1,246 @@
+.player-search {
+  padding: 2rem 0;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: #ffffff;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  outline: none;
+  transition: border-color 200ms ease-out;
+}
+
+.search-input:focus {
+  border-color: #ff4d4d;
+}
+
+.search-input::placeholder {
+  color: #666;
+}
+
+.player-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #252525;
+  border: 1px solid #333;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.suggestion {
+  display: block;
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #ffffff;
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 200ms ease-out;
+}
+
+.suggestion:hover {
+  background: #333;
+}
+
+.player-stats {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.player-stats h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-value.wins {
+  color: #4dff4d;
+}
+
+.stat-value.losses {
+  color: #ff4d4d;
+}
+
+.stat-value.win-rate {
+  color: #4d4dff;
+}
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+}
+
+.matches-list h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  margin: 0 0 1rem 0;
+}
+
+.streaks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.streak {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+
+.win-streak {
+  background: rgba(255, 77, 77, 0.1);
+  color: #ff4d4d;
+}
+
+.loss-streak {
+  background: rgba(77, 77, 255, 0.1);
+  color: #4d4dff;
+}
+
+.move-breakdown {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #333;
+}
+
+.move-breakdown h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  margin: 0 0 1rem 0;
+}
+
+.move-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.move-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.move-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+}
+
+.move-bar-bg {
+  height: 8px;
+  background: #252525;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.move-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 500ms ease-out;
+}
+
+.match-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #ffffff;
+}
+
+.detail-value.winner {
+  color: #4dff4d;
+  font-weight: 700;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #333;
+  margin: 0.5rem 0;
+}
+
+.loading, .empty, .error {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  padding: 3rem;
+  text-align: center;
+}
+
+.error {
+  color: #ff4d4d;
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

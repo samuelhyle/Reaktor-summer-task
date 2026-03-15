@@ -1,0 +1,93 @@
+.leaderboard-page {
+  padding: 2rem 0;
+}
+
+.leaderboard-controls {
+  margin-bottom: 2rem;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.toggle-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.toggle-btn:hover {
+  color: #ffffff;
+  border-color: #666;
+}
+
+.toggle-btn.active {
+  color: #ffffff;
+  background: #252525;
+  border-color: #ff4d4d;
+}
+
+.date-range {
+  display: flex;
+  gap: 1rem;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.date-field label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+}
+
+.date-field input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #ffffff;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  outline: none;
+  transition: border-color 200ms ease-out;
+}
+
+.date-field input:focus {
+  border-color: #ff4d4d;
+}
+
+.date-field input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.error {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #ff4d4d;
+  padding: 3rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .view-toggle {
+    flex-direction: column;
+  }
+
+  .date-range {
+    flex-direction: column;
+  }
+}

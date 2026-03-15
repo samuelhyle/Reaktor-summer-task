@@ -1,0 +1,101 @@
+.match-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.match-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #a0a0a0;
+}
+
+.match-id {
+  color: #666;
+}
+
+.match-players {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background 200ms ease-out;
+}
+
+.player.winner {
+  background: rgba(255, 77, 77, 0.1);
+  border-left: 3px solid #ff4d4d;
+}
+
+.player.loser {
+  opacity: 0.6;
+}
+
+.player.tie {
+  background: rgba(160, 160, 160, 0.1);
+}
+
+.player-a {
+  text-align: left;
+}
+
+.player-b {
+  text-align: right;
+}
+
+.player-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #ffffff;
+}
+
+.player-move {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.vs {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #666;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .match-players {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .player-a, .player-b {
+    width: 100%;
+  }
+
+  .player-b {
+    flex-direction: column-reverse;
+  }
+
+  .vs {
+    font-size: 0.625rem;
+  }
+}

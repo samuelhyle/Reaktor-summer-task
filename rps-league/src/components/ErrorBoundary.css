@@ -1,0 +1,47 @@
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.error-content {
+  text-align: center;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 400px;
+}
+
+.error-content h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  color: #ff4d4d;
+  margin: 0 0 1rem 0;
+}
+
+.error-content p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  margin: 0 0 1.5rem 0;
+}
+
+.retry-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #ffffff;
+  background: #ff4d4d;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.retry-btn:hover {
+  background: #ff6b6b;
+  transform: scale(1.02);
+}
