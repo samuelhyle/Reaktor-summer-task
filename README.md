@@ -2,7 +2,10 @@ Rock Paper Scissors League dashboard project made for the Reaktor Summer Develop
 
 To run the app and test it out:
 
-cd rps-league 
+cd rps-league
+
 npm install
+
 npm run build
+
 npm run dev
