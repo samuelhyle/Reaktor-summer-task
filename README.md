@@ -9,3 +9,5 @@ npm install
 npm run build
 
 npm run dev
+
+:: The app is also running online now here : https://adventurous-imagination-production-ef37.up.railway.app
